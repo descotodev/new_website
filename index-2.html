@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dEscoto Inc – Where Vision Meets Implementation</title>
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --brand-blue: #1D418a;
+            --brand-secondary: #999933; 
+            --brand-grey: #666666;
+            --brand-light-grey: #f8f9fa;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        .text-brand-secondary { color: var(--brand-secondary); }
+        .bg-brand-secondary { background-color: var(--brand-secondary); }
+        
+        header.sticky {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* --- HERO SLIDER STYLES --- */
+        .hero-section {
+            position: relative;
+            height: 95vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-bg-layer {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: opacity 1.5s ease-in-out, transform 8s linear;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .hero-bg-layer.active {
+            opacity: 1;
+            z-index: 2;
+            transform: scale(1.1);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+            z-index: 3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Market Navigation Bar (Like Power) */
+        .market-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .market-item {
+            padding: 20px 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .market-item:hover, .market-item.active {
+            color: white;
+            background: rgba(29, 65, 138, 0.8);
+        }
+        .market-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--brand-secondary);
+        }
+
+        /* Hero Progress Bar */
+        .hero-progress-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            z-index: 21;
+        }
+        .hero-progress-bar {
+            height: 100%;
+            background: var(--brand-secondary);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Career Section Accents */
+        .career-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .career-image-container img {
+            transition: transform 0.6s ease;
+        }
+        .career-image-container:hover img {
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background-color: var(--brand-blue);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 4px;
+            transition: var(--transition);
+            display: inline-block;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-primary:hover {
+            background-color: var(--brand-secondary);
+            transform: translateY(-2px);
+        }
+
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+           /* Stats Section Styling */
+        .stat-card {
+            border-left: 1px solid #e5e7eb;
+            padding-left: 2rem;
+        }
+
+        /* Logo Scroller Animation */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .logo-track {
+            display: flex;
+            width: calc(250px * 40);
+            animation: scroll 100s linear infinite;
+        }
+        .logo-track:hover {
+            animation-play-state: paused;
+        }
+        .logo-slide {
+            width: 250px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .logo-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            filter: grayscale(100%) opacity(0.6);
+            transition: all 0.3s ease;
+        }
+        .logo-slide img:hover {
+            filter: grayscale(0%) opacity(1);
+        }
+
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .footer-logo-white {
+            filter: brightness(0) invert(1);
+        }
+
+        .social-icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #333;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .social-icon-box:hover {
+            background-color: var(--brand-secondary);
+            border-color: var(--brand-secondary);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Top Info Bar -->
+    <div class="hidden lg:block bg-[#1a1a1a] text-white py-2 text-[11px] uppercase tracking-[2px]">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <div>
+                <span class="text-brand-secondary font-bold">Status:</span> <em>Where Vision Meets Implementation</em>
+            </div>
+            <div class="flex space-x-6 items-center">
+                <a href="#" class="hover:text-brand-secondary transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="hover:text-brand-secondary transition-colors"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="hover:text-brand-secondary transition-colors"><i class="fab fa-x-twitter"></i></a>
+                <span class="text-gray-600">|</span>
+                <a href="tel:3127870707" class="hover:text-brand-secondary transition-colors">312.787.0707</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 py-5 transition-all duration-500">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <a href="#" class="w-48 lg:w-60">
+                <img src="https://www.descotoinc.com/wp-content/uploads/2023/09/2.5-X-10-CMYK-NoINC_BlueandGrey_FoundedIn1972_150dpi.png" alt="dEscoto Inc" class="w-full h-auto">
+            </a>
+            
+            <nav class="hidden md:flex space-x-10 text-[13px] font-heading uppercase tracking-widest text-gray-800 items-center">
+                <a href="#" class="nav-link font-bold text-brand-blue">Home</a>
+                <a href="#" class="nav-link">About Us</a>
+                <a href="#industries" class="nav-link">Industries</a>
+                <a href="#careers" class="nav-link">Careers</a>
+                <a href="#" class="nav-link">Contact</a>
+                <a href="#" class="bg-brand-blue text-white px-5 py-2 rounded-sm text-[11px] hover:bg-brand-secondary transition-all">Portal Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <!-- Slides -->
+        <div class="hero-bg-layer active" style="background-image: url('https://www.descotoinc.com/wp-content/uploads/2023/08/4_ORD_TaxiwayAB_WebBannerImage.png');" data-industry="Aviation"></div>
+        <div class="hero-bg-layer" style="background-image: url('https://www.descotoinc.com/wp-content/uploads/2023/08/7_EOWA_I294_N_to-GrandBridge_WebBannerImage.png');" data-industry="Transportation"></div>
+        <div class="hero-bg-layer" style="background-image: url('https://www.descotoinc.com/wp-content/uploads/2023/08/10_SCG_Nicor_JolietHeader_WebBannerImage.png');" data-industry="Utilities"></div>
+        <div class="hero-bg-layer" style="background-image: url('https://www.descotoinc.com/wp-content/uploads/2023/08/12_PBC_115_Fire-Station_WebBannerImage.png');" data-industry="Vertical"></div>
+        <div class="hero-bg-layer" style="background-image: url('https://www.descotoinc.com/wp-content/uploads/2023/08/11_CPS_GroverClevElemGym_WebBannerImage.png');" data-industry="Education"></div>
+        
+        <div class="hero-overlay"></div>
+
+        <!-- Market Navigation Overlay -->
+        <div class="market-nav">
+            <div class="market-item active" onclick="goToSlide(0)">Aviation</div>
+            <div class="market-item" onclick="goToSlide(1)">Transportation</div>
+            <div class="market-item" onclick="goToSlide(2)">Utilities</div>
+            <div class="market-item" onclick="goToSlide(3)">Vertical</div>
+            <div class="market-item" onclick="goToSlide(4)">Education</div>
+        </div>
+
+        <div class="container mx-auto px-6 hero-content">
+            <div class="inline-block bg-brand-secondary px-4 py-1 mb-6 text-[12px] font-bold tracking-[4px] uppercase">
+                Established 1972
+            </div>
+            <h1 class="text-5xl md:text-8xl mb-8 leading-[1.1] tracking-tight transition-all duration-700">
+                Where Vision <br><span id="hero-dynamic-text" class="text-brand-secondary">Meets Aviation</span>
+            </h1>
+            <p class="text-lg md:text-2xl max-w-3xl mx-auto mb-12 text-gray-100 font-light leading-relaxed">
+                Chicago's premier minority-owned firm providing professional construction management and engineering solutions.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <a href="#industries" class="btn-primary">Our Markets</a>
+                <a href="#" class="border-2 border-white px-10 py-4 hover:bg-white hover:text-brand-blue transition-all uppercase tracking-widest text-sm font-bold">Work With Us</a>
+            </div>
+        </div>
+
+        <div class="hero-progress-container">
+            <div class="hero-progress-bar" id="heroProgressBar"></div>
+        </div>
+    </section>
+	<!-- Stats Section -->
+    <section class="py-20 bg-white border-b border-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+                <div class="stat-card section-fade-in">
+                    <div class="text-4xl md:text-6xl font-heading text-brand-blue mb-2">50+</div>
+                    <div class="text-sm uppercase tracking-widest text-brand-secondary font-bold">Years of Experience</div>
+                </div>
+                <div class="stat-card section-fade-in" style="transition-delay: 100ms;">
+                    <div class="text-4xl md:text-6xl font-heading text-brand-blue mb-2">$5B+</div>
+                    <div class="text-sm uppercase tracking-widest text-brand-secondary font-bold">Project Value Managed</div>
+                </div>
+                <div class="stat-card section-fade-in" style="transition-delay: 200ms;">
+                    <div class="text-4xl md:text-6xl font-heading text-brand-blue mb-2">100%</div>
+                    <div class="text-sm uppercase tracking-widest text-brand-secondary font-bold">MBE Certified</div>
+                </div>
+                <div class="stat-card section-fade-in" style="transition-delay: 300ms;">
+                    <div class="text-4xl md:text-6xl font-heading text-brand-blue mb-2">24/7</div>
+                    <div class="text-sm uppercase tracking-widest text-brand-secondary font-bold">Commitment to Safety</div>
+                </div>
+            </div>
+        </div>
+    </section>
+	<!-- Industries Section -->
+    <section id="industries" class="py-32 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 section-fade-in">
+                <div class="max-w-2xl">
+                    <h2 class="text-brand-secondary uppercase tracking-[4px] text-sm mb-4 font-bold">What We Do</h2>
+                    <h3 class="text-4xl md:text-5xl text-brand-blue">Industries We Serve</h3>
+                </div>
+                <div class="hidden md:block">
+                    <a href="#" class="text-brand-blue font-bold uppercase tracking-widest text-sm hover:text-brand-secondary transition-colors">View All Projects <i class="fas fa-arrow-right ml-2"></i></a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Aviation -->
+                <a href="#" class="industry-card relative h-[500px] group shadow-xl section-fade-in block">
+                    <img src="https://www.descotoinc.com/wp-content/uploads/2020/06/avaition-home.jpg" alt="Aviation" class="w-full h-full object-cover transition-transform duration-700">
+                    <div class="industry-overlay absolute inset-0 bg-black/40 flex flex-col justify-end p-8 transition-colors duration-500">
+                        <div class="bg-brand-secondary w-12 h-[2px] mb-4 group-hover:w-full transition-all duration-500"></div>
+                        <h4 class="text-white text-2xl font-heading mb-2">Aviation</h4>
+                        <p class="text-gray-200 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">Comprehensive construction engineering for airport infrastructure.</p>
+                    </div>
+                </a>
+                <!-- Transportation -->
+                <a href="#" class="industry-card relative h-[500px] group shadow-xl section-fade-in block" style="transition-delay: 100ms;">
+                    <img src="https://www.descotoinc.com/wp-content/uploads/2016/03/eligin-ohare-img-5.png" alt="Transportation" class="w-full h-full object-cover transition-transform duration-700">
+                    <div class="industry-overlay absolute inset-0 bg-black/40 flex flex-col justify-end p-8 transition-colors duration-500">
+                        <div class="bg-brand-secondary w-12 h-[2px] mb-4 group-hover:w-full transition-all duration-500"></div>
+                        <h4 class="text-white text-2xl font-heading mb-2">Transportation</h4>
+                        <p class="text-gray-200 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">Managing roadways and bridges across the Midwest.</p>
+                    </div>
+                </a>
+                <!-- Vertical -->
+                <a href="#" class="industry-card relative h-[500px] group shadow-xl section-fade-in block" style="transition-delay: 200ms;">
+                    <img src="https://www.descotoinc.com/wp-content/uploads/2019/11/vertical.png" alt="Vertical" class="w-full h-full object-cover transition-transform duration-700">
+                    <div class="industry-overlay absolute inset-0 bg-black/40 flex flex-col justify-end p-8 transition-colors duration-500">
+                        <div class="bg-brand-secondary w-12 h-[2px] mb-4 group-hover:w-full transition-all duration-500"></div>
+                        <h4 class="text-white text-2xl font-heading mb-2">Vertical</h4>
+                        <p class="text-gray-200 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">Management for commercial and healthcare facilities.</p>
+                    </div>
+                </a>
+                <!-- Utilities -->
+                <a href="#" class="industry-card relative h-[500px] group shadow-xl section-fade-in block" style="transition-delay: 300ms;">
+                    <img src="https://www.descotoinc.com/wp-content/uploads/2020/04/pgl-img-1-scaled.jpg" alt="Utilities" class="w-full h-full object-cover transition-transform duration-700">
+                    <div class="industry-overlay absolute inset-0 bg-black/40 flex flex-col justify-end p-8 transition-colors duration-500">
+                        <div class="bg-brand-secondary w-12 h-[2px] mb-4 group-hover:w-full transition-all duration-500"></div>
+                        <h4 class="text-white text-2xl font-heading mb-2">Utilities</h4>
+                        <p class="text-gray-200 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">Water, waste, and energy sector infrastructure projects.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+	<!-- News Section -->
+    <section class="py-24 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row gap-16 items-start">
+                <div class="md:w-1/3 section-fade-in">
+                    <h2 class="text-brand-secondary uppercase tracking-[4px] text-sm mb-4 font-bold">News & Highlights</h2>
+                    <h3 class="text-3xl text-brand-blue mb-6">Built on Relationships, <br>Focused on Results.</h3>
+                    <p class="text-gray-600 mb-8 leading-relaxed">We believe that successful projects are built on a foundation of trust and collaboration. Discover how we're making an impact in our communities.</p>
+                    <a href="#" class="btn-primary">Our Full Story</a>
+                </div>
+                <div class="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 shadow-sm border-t-4 border-brand-secondary section-fade-in" style="transition-delay: 100ms;">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">March 2024</span>
+                        <h4 class="text-xl text-brand-blue mt-4 mb-4">Supporting Women in Construction Week</h4>
+                        <p class="text-gray-600 text-sm mb-6">Celebrating the vital role women play in shaping our industry and our company's future.</p>
+                        <a href="#" class="text-brand-secondary font-bold text-xs uppercase tracking-widest hover:underline">Read More</a>
+                    </div>
+                    <div class="bg-white p-8 shadow-sm border-t-4 border-brand-blue section-fade-in" style="transition-delay: 200ms;">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">January 2024</span>
+                        <h4 class="text-xl text-brand-blue mt-4 mb-4">Milestone: 50 Years of dEscoto Excellence</h4>
+                        <p class="text-gray-600 text-sm mb-6">Reflecting on half a century of delivering vision and implementation in Chicago and beyond.</p>
+                        <a href="#" class="text-brand-secondary font-bold text-xs uppercase tracking-widest hover:underline">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Careers Section (Inspired by Power) -->
+    <section id="careers" class="py-24 bg-white overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2 section-fade-in">
+                    <h2 class="text-brand-secondary uppercase tracking-[4px] text-sm mb-4 font-bold">Build Your Future</h2>
+                    <h3 class="text-4xl md:text-6xl text-brand-blue mb-8 leading-tight">Career <br>Opportunities</h3>
+                    <p class="text-lg text-gray-600 mb-10 leading-relaxed max-w-xl">
+                        At dEscoto, we don't just build infrastructure; we build careers. Our success is driven by the diverse perspectives and technical excellence of our people. Join a team where your impact is visible across the Chicago skyline.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
+                        <div class="border-l-4 border-brand-secondary pl-6">
+                            <h4 class="text-xl font-bold text-brand-blue mb-2">Professional Growth</h4>
+                            <p class="text-sm text-gray-500">Mentorship programs and continuous learning pathways for every stage of your career.</p>
+                        </div>
+                        <div class="border-l-4 border-brand-blue pl-6">
+                            <h4 class="text-xl font-bold text-brand-blue mb-2">Impactful Work</h4>
+                            <p class="text-sm text-gray-500">Contribute to monumental projects in aviation, transportation, and utility sectors.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#" class="btn-primary">View Openings</a>
+                        <a href="#" class="bg-gray-100 text-brand-blue px-10 py-4 hover:bg-brand-blue hover:text-white transition-all uppercase tracking-widest text-sm font-bold">Culture & Benefits</a>
+                    </div>
+                </div>
+
+                <div class="lg:w-1/2 relative section-fade-in">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="career-image-container rounded-lg h-80">
+                            <img src="https://www.descotoinc.com/wp-content/uploads/2024/03/2_peoples-gas-safety-mod-program_webbannerImage.png" alt="Field Work" class="w-full h-full object-cover">
+                        </div>
+                        <div class="career-image-container rounded-lg h-80 mt-12">
+                            <img src="https://www.descotoinc.com/wp-content/uploads/2023/08/5_SCG_Nicor_JolietHeaderWelders_WebBannerImage.png" alt="Team Meeting" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <!-- Stats Floating Card -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-brand-blue p-8 text-white rounded shadow-2xl z-10 hidden sm:block">
+                        <div class="text-4xl font-bold mb-1">50+</div>
+                        <div class="text-[10px] uppercase tracking-widest text-brand-secondary mb-4">Years of Legacy</div>
+                        <div class="text-sm opacity-80 italic">"Building the foundation for the next generation of engineers."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Affiliations Section -->
+    <section class="py-24 bg-gray-50">
+        <div class="container mx-auto px-6 mb-12">
+            <h2 class="text-brand-blue font-bold text-center uppercase tracking-widest text-xs">Our Professional Affiliations</h2>
+        </div>
+        <div class="relative">
+            <div class="logo-track">
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/wpb-logo.png" alt="WPB"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/nrc.jpg" alt="NRC"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/north-central.png" alt="North Central"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/irtba-logo.jpg" alt="IRTBA"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/iahe-logo-2.png" alt="IAHE"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/asce-logo.png" alt="ASCE"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/cmaa.jpg" alt="CMAA"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/cmsdc-logo.jpg" alt="CMSDC"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/dca-logo2.png" alt="DCA"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/dfwmsdc_logo.png" alt="DFWMSDC"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/georgia_logo.jpg" alt="Georgia"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/ground_hog-logo-.png" alt="Ground Hog"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/HACIA-Logo.jpg" alt="HACIA"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/apwa-logo.png" alt="APWA"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/aaae-logo.png" alt="AAAE"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/aga.png" alt="AGA"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/nmsdc.jpg" alt="NMSDC"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2021/11/lMEA_LOGO_96ppi_forWeb_large.png" alt="LMEA"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/ihcc_logo.png" alt="IHCC"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/ingaa.png" alt="INGAA"></div>
+                <!-- Duplicates -->
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/wpb-logo.png" alt="WPB"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/nrc.jpg" alt="NRC"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/north-central.png" alt="North Central"></div>
+                <div class="logo-slide"><img src="https://www.descotoinc.com/wp-content/uploads/2020/06/irtba-logo.jpg" alt="IRTBA"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#111] text-gray-400 py-24">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-16 mb-20">
+                <div class="md:col-span-5">
+                    <img src="https://www.descotoinc.com/wp-content/uploads/2025/03/circle_logo-300x300.png" alt="dEscoto" class="h-20 mb-8 filter brightness-0 invert">
+                    <p class="text-lg leading-relaxed mb-8">
+                        Leading with excellence in project management and engineering. We turn complex visions into tangible infrastructure realities.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 border border-gray-700 rounded-full flex items-center justify-center hover:bg-brand-secondary transition-all"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 border border-gray-700 rounded-full flex items-center justify-center hover:bg-brand-secondary transition-all"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-3">
+                    <h4 class="text-white font-bold mb-8 uppercase tracking-widest text-xs border-l-2 border-brand-secondary pl-4">Markets</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="#" class="hover:text-brand-secondary transition-colors">Aviation</a></li>
+                        <li><a href="#" class="hover:text-brand-secondary transition-colors">Transportation</a></li>
+                        <li><a href="#" class="hover:text-brand-secondary transition-colors">Vertical</a></li>
+                        <li><a href="#" class="hover:text-brand-secondary transition-colors">Utilities</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-4 flex flex-col items-start md:items-end">
+                    <h4 class="text-white font-bold mb-8 uppercase tracking-widest text-xs border-r-2 border-brand-secondary pr-4 md:text-right w-full">Contact</h4>
+                    <div class="md:text-right space-y-2 mb-8">
+                        <p class="text-white font-semibold">dEscoto Inc. Chicago</p>
+                        <p>55 W. Van Buren Street | Suite 200</p>
+                        <p>Chicago, IL 60605</p>
+                        <p class="text-brand-secondary font-bold pt-2">(312) 787-0707</p>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-900 text-center md:text-left text-[11px] uppercase tracking-widest">
+                <p>&copy; <script>document.write(new Date().getFullYear())</script> dEscoto Inc. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- HERO SLIDER LOGIC ---
+        const slides = document.querySelectorAll('.hero-bg-layer');
+        const marketItems = document.querySelectorAll('.market-item');
+        const dynamicText = document.getElementById('hero-dynamic-text');
+        const progressBar = document.getElementById('heroProgressBar');
+        
+        let currentSlideIndex = 0;
+        const slideDuration = 6000;
+        let progress = 0;
+        let sliderPaused = false;
+
+        function goToSlide(index) {
+            // Update UI
+            slides.forEach(s => s.classList.remove('active'));
+            marketItems.forEach(item => item.classList.remove('active'));
+            
+            currentSlideIndex = index;
+            slides[currentSlideIndex].classList.add('active');
+            marketItems[currentSlideIndex].classList.add('active');
+            
+            // Text change
+            const industry = slides[currentSlideIndex].getAttribute('data-industry');
+            dynamicText.style.opacity = '0';
+            setTimeout(() => {
+                dynamicText.textContent = `Meets ${industry}`;
+                dynamicText.style.opacity = '1';
+            }, 300);
+
+            progress = 0;
+        }
+
+        function updateProgress() {
+            if (!sliderPaused) {
+                progress += (100 / (slideDuration / 100));
+                if (progress >= 100) {
+                    goToSlide((currentSlideIndex + 1) % slides.length);
+                }
+                progressBar.style.width = progress + '%';
+            }
+        }
+
+        setInterval(updateProgress, 100);
+
+        // --- ANIMATIONS ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section-fade-in').forEach(el => observer.observe(el));
+
+        // Header scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 80) {
+                header.classList.add('sticky');
+            } else {
+                header.classList.remove('sticky');
+            }
+        });
+    </script>
+</body>
+</html>
